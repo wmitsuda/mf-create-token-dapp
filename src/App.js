@@ -26,18 +26,18 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1>sdkWorking: { this.state.sdkWorking ? "true" : "false" }</h1>
+          <h1>MainframeSDK is { this.state.sdkWorking ? "" : "NOT" } working!</h1>
           <img src={this.state.sdkWorking ? "https://mainframe.com/static/monetization.f3c95d77.svg" : logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
           </p>
           <a
             className="App-link"
-            href="https://reactjs.org"
+            href="https://mainframe.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn React
+            Learn to build on Mainframe.
           </a>
         </header>
       </div>
