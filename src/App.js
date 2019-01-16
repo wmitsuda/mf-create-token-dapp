@@ -19,7 +19,6 @@ class App extends Component {
     super(props);
     this.sdk = new MainframeSDK()
     this.web3 = new Web3(this.sdk.blockchain.getWeb3Provider())
-    console.log(this.web3.eth.accounts[0])
 
   }
 
@@ -49,7 +48,9 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <h1>MainframeSDK is { this.state.sdkWorking ? "" : "NOT" } working!</h1>
-          <h1>{ this.state.account ? this.state.account : "" } </h1>
+          <h3>Your wallet address is: <br />
+          { this.state.account ? this.state.account : "" } </h3>
+          <p>Eth balance: {this.state.ethBalance}</p>
           <img src={this.state.sdkWorking ? "https://mainframe.com/static/monetization.f3c95d77.svg" : logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
@@ -57,7 +58,6 @@ class App extends Component {
           <a
             className="App-link"
             href="https://mainframe.com/developers"
-            target="_blank"
             rel="noopener noreferrer"
           >
             Learn to build on Mainframe.
