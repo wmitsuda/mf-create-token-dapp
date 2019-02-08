@@ -18,12 +18,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.sdk = new MainframeSDK()
-    this.web3 = new Web3(this.sdk.blockchain.getWeb3Provider())
+    this.web3 = new Web3(this.sdk.ethereum.web3Provider)
 
   }
 
   componentDidMount() {
-    if (this.sdk.blockchain.getWeb3Provider() !== null) {
+    if (this.sdk.ethereum.web3Provider !== null) {
       this.setState({sdkWorking: true})
     }
     this.fetchState()
