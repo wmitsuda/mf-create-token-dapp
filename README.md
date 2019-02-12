@@ -8,12 +8,6 @@ This repository is a minimal example to get you up and running with a properly c
 
 
 ## Development Flow
-### link local @mainframe/sdk
-- In a different directory clone js-mainframe `git clone https://github.com/MainframeHQ/js-mainframe.git`
-- Follow the setup instructions in the [readme](https://github.com/MainframeHQ/js-mainframe).
-- Run `yarn link` from inside the `js-mainframe/packages/sdk` directory. 
-- Inside the `create-mainframe-dapp` directory run `yarn link "@mainframe/sdk"`
-
 ### `yarn start`
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -24,11 +18,6 @@ You will also see any lint errors in the console.
 ### `yarn build`
 Will build your project and move the results into a `build` folder. This folder is the location you will reference within the Mainframe dApp creation dialogues. Note the use of the `homepage` key in Package.json.
 
-## Deploy to Mainframe
-`//TODO: add deployment instructions`
-- step 1
-- step 2
-- ...
 ---
 
 ### Create React App Instructions

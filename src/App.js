@@ -19,7 +19,6 @@ class App extends Component {
     super(props);
     this.sdk = new MainframeSDK()
     this.web3 = new Web3(this.sdk.ethereum.web3Provider)
-
   }
 
   componentDidMount() {
