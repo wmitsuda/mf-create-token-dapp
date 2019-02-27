@@ -51,8 +51,8 @@ export default class App extends Component<Props, State> {
     ethBalance: 0,
   }
 
-  constructor(props: Props) {
-    super(props)
+  constructor() {
+    super()
     this.sdk = new MainframeSDK()
     this.web3 = new Web3(this.sdk.ethereum.web3Provider)
   }
@@ -121,7 +121,7 @@ export default class App extends Component<Props, State> {
                   <Text bold>ETH balance</Text>
                 </Column>
                 <Column>
-                  <Text>{this.state.ethBalance}</Text>
+                  <Text>{parseFloat(this.state.ethBalance).toFixed(8)}</Text>
                 </Column>
               </Row>
             </Account>
