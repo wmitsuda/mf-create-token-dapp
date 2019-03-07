@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import MainframeSDK from '@mainframe/sdk'
 import Web3 from 'web3'
 
@@ -13,14 +13,6 @@ import './App.css'
 import LogoImg from './logo.svg'
 
 import Theme from './theme'
-
-type Props = {}
-
-type State = {
-  sdkWorking?: boolean,
-  account?: string,
-  ethBalance?: number,
-}
 
 const Container = styled.View`
   align-items: center;
@@ -41,108 +33,97 @@ const Account = styled.View`
 
 const Logo = styled.Image``
 
-export default class App extends Component<Props, State> {
-  sdk: MainframeSDK
-  web3: Web3
+const sdk = new MainframeSDK()
+const web3 = new Web3(sdk.ethereum.web3Provider)
 
-  state = {
-    sdkWorking: false,
-    account: '',
-    ethBalance: 0,
-  }
+export default function App() {
+  const [sdkWorking, setSdkWorking] = useState(false)
+  const [account, setAccount] = useState('')
+  const [ethBalance, setEthBalance] = useState(0)
 
-  constructor() {
-    super()
-    this.sdk = new MainframeSDK()
-    this.web3 = new Web3(this.sdk.ethereum.web3Provider)
-  }
-
-  componentDidMount() {
-    if (this.sdk.ethereum.web3Provider !== null) {
-      this.setState({ sdkWorking: true })
-      this.sdk.ethereum.on('accountsChanged', () => {
-        this.fetchState()
-      })
-      this.sdk.ethereum.on('networkChanged', () => {
-        this.fetchState()
-      })
+  useEffect(() => {
+    if (sdk.ethereum.web3Provider !== null) {
+      setSdkWorking(true)
+      sdk.ethereum.on('accountsChanged', fetchState)
+      sdk.ethereum.on('networkChanged', fetchState)
     }
-    this.fetchState()
-  }
+    fetchState()
 
-  async fetchState() {
-    const accounts = await this.web3.eth.getAccounts()
+    return () => {
+      sdk.ethereum.removeListener('accountsChanged', fetchState)
+      sdk.ethereum.removeListener('networkChanged', fetchState)
+    }
+  }, [])
+
+  const fetchState = async () => {
+    const accounts = await web3.eth.getAccounts()
     if (accounts.length) {
       const account = accounts[0]
-      const weiBalance = await this.web3.eth.getBalance(account)
-      const ethBalance = this.web3.utils.fromWei(weiBalance)
-      this.setState({
-        account,
-        ethBalance,
-      })
+      const weiBalance = await web3.eth.getBalance(account)
+      const ethBalance = web3.utils.fromWei(weiBalance)
+      setAccount(account)
+      setEthBalance(ethBalance)
     }
   }
 
-  render() {
-    return (
-      <ThemeProvider theme={Theme}>
-        <Container>
-          <Row size={1}>
-            <Column>
-              <Text variant="center">
-                <Logo
-                  defaultSource={{
-                    uri: LogoImg,
-                    width: 200,
-                    height: 60,
-                  }}
-                  resizeMode="contain"
-                />
-              </Text>
-            </Column>
-            <Column>
-              <Text variant={['h2', 'center']}>
-                MainframeSDK is {this.state.sdkWorking ? '' : 'NOT'} working!
-              </Text>
-            </Column>
-          </Row>
-          {this.state.sdkWorking && this.state.account ? (
-            <Account>
-              <Row size={2}>
-                <Column>
-                  <Text bold>Wallet address</Text>
-                </Column>
-                <Column>
-                  <Text variant="ellipsis">{this.state.account}</Text>
-                </Column>
-              </Row>
-              <Row size={2}>
-                <Column>
-                  <Text bold>ETH balance</Text>
-                </Column>
-                <Column>
-                  <Text>{parseFloat(this.state.ethBalance).toFixed(8)}</Text>
-                </Column>
-              </Row>
-            </Account>
-          ) : null}
-          <Row size={1}>
-            <Column>
-              <Text variant="center">
-                Edit <Text variant="code">src/App.js</Text> and save to reload.
-              </Text>
-            </Column>
-          </Row>
-          <Row size={1}>
-            <Column>
-              <Text variant="center">
-                Access <Text variant="code">mainframe.com/developers</Text> and
-                learn to build on Mainframe.
-              </Text>
-            </Column>
-          </Row>
-        </Container>
-      </ThemeProvider>
-    )
-  }
+  return (
+    <ThemeProvider theme={Theme}>
+      <Container>
+        <Row size={1}>
+          <Column>
+            <Text variant="center">
+              <Logo
+                defaultSource={{
+                  uri: LogoImg,
+                  width: 200,
+                  height: 60,
+                }}
+                resizeMode="contain"
+              />
+            </Text>
+          </Column>
+          <Column>
+            <Text variant={['h2', 'center']}>
+              MainframeSDK is {sdkWorking ? '' : 'NOT'} working!
+            </Text>
+          </Column>
+        </Row>
+        {sdkWorking && account ? (
+          <Account>
+            <Row size={2}>
+              <Column>
+                <Text bold>Wallet address</Text>
+              </Column>
+              <Column>
+                <Text variant="ellipsis">{account}</Text>
+              </Column>
+            </Row>
+            <Row size={2}>
+              <Column>
+                <Text bold>ETH balance</Text>
+              </Column>
+              <Column>
+                <Text>{parseFloat(ethBalance).toFixed(8)}</Text>
+              </Column>
+            </Row>
+          </Account>
+        ) : null}
+        <Row size={1}>
+          <Column>
+            <Text variant="center">
+              Edit <Text variant="code">src/App.js</Text> and save to reload.
+            </Text>
+          </Column>
+        </Row>
+        <Row size={1}>
+          <Column>
+            <Text variant="center">
+              Access <Text variant="code">mainframe.com/developers</Text> and
+              learn to build on Mainframe.
+            </Text>
+          </Column>
+        </Row>
+      </Container>
+    </ThemeProvider>
+  )
 }
