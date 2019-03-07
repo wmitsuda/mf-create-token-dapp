@@ -8,7 +8,7 @@
     "@morpheus-ui/fonts": "^0.0.1",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "react-scripts": "^2.1.6",
+    "react-scripts": "^2.1.8",
     "web3": "1.0.0-beta.37"
   },
   "homepage": "./",
