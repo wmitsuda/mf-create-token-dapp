@@ -36,6 +36,46 @@ const Logo = styled.Image``
 const sdk = new MainframeSDK()
 const web3 = new Web3(sdk.ethereum.web3Provider)
 
+const MainframeLogo = React.memo(() => (
+  <Text variant="center">
+    <Logo
+      defaultSource={{
+        uri: LogoImg,
+        width: 200,
+        height: 60,
+      }}
+      resizeMode="contain"
+    />
+  </Text>
+))
+
+const MainframeHeader = React.memo(({ sdkWorking }) => (
+  <Text variant={['h2', 'center']}>
+    MainframeSDK is {sdkWorking ? '' : 'NOT'} working!
+  </Text>
+))
+
+const AccountData = React.memo(({ account, ethBalance }) => (
+  <Account>
+    <Row size={2}>
+      <Column>
+        <Text bold>Wallet address</Text>
+      </Column>
+      <Column>
+        <Text variant="ellipsis">{account}</Text>
+      </Column>
+    </Row>
+    <Row size={2}>
+      <Column>
+        <Text bold>ETH balance</Text>
+      </Column>
+      <Column>
+        <Text>{parseFloat(ethBalance).toFixed(8)}</Text>
+      </Column>
+    </Row>
+  </Account>
+))
+
 export default function App() {
   const [sdkWorking, setSdkWorking] = useState(false)
   const [account, setAccount] = useState('')
@@ -71,42 +111,14 @@ export default function App() {
       <Container>
         <Row size={1}>
           <Column>
-            <Text variant="center">
-              <Logo
-                defaultSource={{
-                  uri: LogoImg,
-                  width: 200,
-                  height: 60,
-                }}
-                resizeMode="contain"
-              />
-            </Text>
+            <MainframeLogo />
           </Column>
           <Column>
-            <Text variant={['h2', 'center']}>
-              MainframeSDK is {sdkWorking ? '' : 'NOT'} working!
-            </Text>
+            <MainframeHeader sdkWorking={sdkWorking} />
           </Column>
         </Row>
         {sdkWorking && account ? (
-          <Account>
-            <Row size={2}>
-              <Column>
-                <Text bold>Wallet address</Text>
-              </Column>
-              <Column>
-                <Text variant="ellipsis">{account}</Text>
-              </Column>
-            </Row>
-            <Row size={2}>
-              <Column>
-                <Text bold>ETH balance</Text>
-              </Column>
-              <Column>
-                <Text>{parseFloat(ethBalance).toFixed(8)}</Text>
-              </Column>
-            </Row>
-          </Account>
+          <AccountData account={account} ethBalance={ethBalance} />
         ) : null}
         <Row size={1}>
           <Column>
