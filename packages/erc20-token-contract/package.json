@@ -1,0 +1,15 @@
+{
+  "name": "erc20-token-contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Willian Mitsuda <wmitsuda@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "openzeppelin-solidity": "^2.1.3",
+    "truffle": "^5.0.7"
+  }
+}
