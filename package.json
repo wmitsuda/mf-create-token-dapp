@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@mainframe/sdk": "^0.2.1",
-    "@morpheus-ui/core": "^0.0.26",
+    "@morpheus-ui/core": "^0.0.37",
     "@morpheus-ui/fonts": "^0.0.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
