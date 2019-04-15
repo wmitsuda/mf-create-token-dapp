@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Divider from "@material-ui/core/Divider";
 import styled from "styled-components";
+import ContractCreationStatus from "./ContractCreationStatus";
 import StandardERC20Token from "./contracts/StandardERC20Token.json";
 
 import "@morpheus-ui/fonts";
@@ -145,10 +146,12 @@ export default function App() {
               <StyledBox>
                 {isSubmitting ? <LinearProgress /> : <Divider />}
               </StyledBox>
-              <StatusInfo
-                transactionHash={transactionHash}
-                contractAddress={contractAddress}
-              />
+              <StyledBox>
+                <ContractCreationStatus
+                  transactionHash={transactionHash}
+                  contractAddress={contractAddress}
+                />
+              </StyledBox>
             </Form>
           )}
         />
@@ -160,21 +163,6 @@ export default function App() {
 const StyledBox = styled.div`
   margin: 16px 0 8px;
 `;
-
-const StatusInfo = ({ transactionHash, contractAddress }) => (
-  <StyledBox>
-    {transactionHash && (
-      <Typography variant="subtitle2">
-        Contract creation broadcast: txhash={transactionHash}
-      </Typography>
-    )}
-    {contractAddress && (
-      <Typography variant="subtitle2">
-        ERC20 contract created: address={contractAddress}
-      </Typography>
-    )}
-  </StyledBox>
-);
 
 const CustomTextField = ({
   field,
