@@ -48,8 +48,6 @@ export default function App() {
   const [contractAddress, setContractAddress] = useState();
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log(values);
-    console.log(sdk.ethereum.web3Provider);
     const web3 = new Web3(sdk.ethereum.web3Provider, null, web3Options);
     const accounts = await web3.eth.getAccounts();
 
@@ -58,25 +56,27 @@ export default function App() {
       null,
       web3Options
     );
-    const contract = await erc20
-      .deploy({
-        data: StandardERC20Token.bytecode,
-        arguments: [
-          values.tokenName,
-          values.tokenSymbol,
-          18,
-          values.initialOwner,
-          values.initialSupply.toString() + "0".repeat(18)
-        ]
-      })
-      .send({ from: accounts[0] })
-      .on("transactionHash", hash => {
-        setTransactionHash(hash);
-        console.log(`Transaction hash: ${hash}`);
-      });
-    console.log("Transaction confirmed!!!");
-    console.log(contract);
-    setContractAddress(contract.options.address);
+    try {
+      const contract = await erc20
+        .deploy({
+          data: StandardERC20Token.bytecode,
+          arguments: [
+            values.tokenName,
+            values.tokenSymbol,
+            18,
+            values.initialOwner,
+            values.initialSupply.toString() + "0".repeat(18)
+          ]
+        })
+        .send({ from: accounts[0] })
+        .on("transactionHash", hash => {
+          setTransactionHash(hash);
+        });
+      setContractAddress(contract.options.address);
+    } catch (err) {
+      console.log("Some error occurred or user has cancelled operation");
+      console.log(err);
+    }
     setSubmitting(false);
   };
 
