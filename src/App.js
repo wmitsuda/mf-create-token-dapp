@@ -1,141 +1,195 @@
 // @flow
 
-import React, { useState, useEffect } from 'react'
-import MainframeSDK from '@mainframe/sdk'
-import Web3 from 'web3'
+import React, { useState } from "react";
+import MainframeSDK from "@mainframe/sdk";
+import Web3 from "web3";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Divider from "@material-ui/core/Divider";
+import styled from "styled-components";
+import StandardERC20Token from "./contracts/StandardERC20Token.json";
 
-import { Text, Row, Column, ThemeProvider } from '@morpheus-ui/core'
-import styled from 'styled-components/native'
+import "@morpheus-ui/fonts";
 
-import '@morpheus-ui/fonts'
-import './App.css'
+const sdk = new MainframeSDK();
 
-import LogoImg from './logo.svg'
+const initialValues = {
+  tokenName: "Testcoin",
+  tokenSymbol: "TEST",
+  initialSupply: "100",
+  initialOwner: "0xe3f0D0ECfD7F655F322A05d15C996748Ad945561"
+};
 
-import Theme from './theme'
+const validationSchema = Yup.object().shape({
+  tokenName: Yup.string().required("Value is required"),
+  tokenSymbol: Yup.string().required("Value is required"),
+  initialSupply: Yup.string().required("Value is required"),
+  initialOwner: Yup.string().required("Value is required")
+});
 
-const Container = styled.View`
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-`
-
-const Account = styled.View`
-  align-items: center;
-  justify-content: center;
+const StyledDiv = styled.div`
   margin: 20px;
-  border-color: grey;
-  border-width: 1px;
-`
+  padding: 20px;
+`;
 
-const Logo = styled.Image``
-
-const sdk = new MainframeSDK()
-const web3 = new Web3(sdk.ethereum.web3Provider)
-
-const MainframeLogo = React.memo(() => (
-  <Text variant="center">
-    <Logo
-      defaultSource={{
-        uri: LogoImg,
-        width: 200,
-        height: 60,
-      }}
-      resizeMode="contain"
-    />
-  </Text>
-))
-
-const MainframeHeader = React.memo(({ sdkWorking }) => (
-  <Text variant={['h2', 'center']}>
-    MainframeSDK is {sdkWorking ? '' : 'NOT'} working!
-  </Text>
-))
-
-const AccountData = React.memo(({ account, ethBalance }) => (
-  <Account>
-    <Row size={2}>
-      <Column>
-        <Text bold>Wallet address</Text>
-      </Column>
-      <Column>
-        <Text variant="ellipsis">{account}</Text>
-      </Column>
-    </Row>
-    <Row size={2}>
-      <Column>
-        <Text bold>ETH balance</Text>
-      </Column>
-      <Column>
-        <Text>{parseFloat(ethBalance).toFixed(8)}</Text>
-      </Column>
-    </Row>
-  </Account>
-))
+const web3Options = {
+  trnasactionConfirmationBlocks: 1
+};
 
 export default function App() {
-  const [sdkWorking, setSdkWorking] = useState(false)
-  const [account, setAccount] = useState('')
-  const [ethBalance, setEthBalance] = useState(0)
+  const [transactionHash, setTransactionHash] = useState();
+  const [contractAddress, setContractAddress] = useState();
 
-  useEffect(() => {
-    if (sdk.ethereum.web3Provider !== null) {
-      setSdkWorking(true)
-      sdk.ethereum.on('accountsChanged', fetchState)
-      sdk.ethereum.on('networkChanged', fetchState)
-    }
-    fetchState()
+  const handleSubmit = async (values, { setSubmitting }) => {
+    console.log(values);
+    console.log(sdk.ethereum.web3Provider);
+    const web3 = new Web3(sdk.ethereum.web3Provider, null, web3Options);
+    const accounts = await web3.eth.getAccounts();
 
-    return () => {
-      sdk.ethereum.removeListener('accountsChanged', fetchState)
-      sdk.ethereum.removeListener('networkChanged', fetchState)
-    }
-  }, [])
-
-  const fetchState = async () => {
-    const accounts = await web3.eth.getAccounts()
-    if (accounts.length) {
-      const account = accounts[0]
-      const weiBalance = await web3.eth.getBalance(account)
-      const ethBalance = web3.utils.fromWei(weiBalance)
-      setAccount(account)
-      setEthBalance(ethBalance)
-    }
-  }
+    const erc20 = new web3.eth.Contract(
+      StandardERC20Token.abi,
+      null,
+      web3Options
+    );
+    const contract = await erc20
+      .deploy({
+        data: StandardERC20Token.bytecode,
+        arguments: [
+          values.tokenName,
+          values.tokenSymbol,
+          18,
+          values.initialOwner,
+          values.initialSupply.toString() + "0".repeat(18)
+        ]
+      })
+      .send({ from: accounts[0] })
+      .on("transactionHash", hash => {
+        setTransactionHash(hash);
+        console.log(`Transaction hash: ${hash}`);
+      });
+    console.log("Transaction confirmed!!!");
+    console.log(contract);
+    setContractAddress(contract.options.address);
+    setSubmitting(false);
+  };
 
   return (
-    <ThemeProvider theme={Theme}>
-      <Container>
-        <Row size={1}>
-          <Column>
-            <MainframeLogo />
-          </Column>
-          <Column>
-            <MainframeHeader sdkWorking={sdkWorking} />
-          </Column>
-        </Row>
-        {sdkWorking && account ? (
-          <AccountData account={account} ethBalance={ethBalance} />
-        ) : null}
-        <Row size={1}>
-          <Column>
-            <Text variant="center">
-              Edit <Text variant="code">src/App.js</Text> and save to reload.
-            </Text>
-          </Column>
-        </Row>
-        <Row size={1}>
-          <Column>
-            <Text variant="center">
-              Access <Text variant="code">mainframe.com/developers</Text> and
-              learn to build on Mainframe.
-            </Text>
-          </Column>
-        </Row>
-      </Container>
-    </ThemeProvider>
-  )
+    <>
+      <CssBaseline />
+      <Paper component={StyledDiv}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+          render={({ isSubmitting }) => (
+            <Form noValidate>
+              <Typography variant="h6">
+                Fill the information bellow to create your own ERC20 token
+              </Typography>
+              <Field
+                name="tokenName"
+                render={props => (
+                  <CustomTextField
+                    {...props}
+                    label="Token name"
+                    helperText="Enter the token name, e.g. Testcoin"
+                  />
+                )}
+              />
+              <Field
+                name="tokenSymbol"
+                render={props => (
+                  <CustomTextField
+                    {...props}
+                    label="Token symbol"
+                    helperText="Enter the token symbol, e.g. TEST"
+                  />
+                )}
+              />
+              <Field
+                name="initialSupply"
+                render={props => (
+                  <CustomTextField
+                    {...props}
+                    label="Initial supply"
+                    helperText="Enter the initial token supply, e.g. 1000"
+                  />
+                )}
+              />
+              <Field
+                name="initialOwner"
+                render={props => (
+                  <CustomTextField
+                    {...props}
+                    label="Initial owner"
+                    helperText="Enter the address to be assigned as the owner of all initial tokens"
+                  />
+                )}
+              />
+              <StyledBox>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={isSubmitting}
+                >
+                  Create Token
+                </Button>
+              </StyledBox>
+              <StyledBox>
+                {isSubmitting ? <LinearProgress /> : <Divider />}
+              </StyledBox>
+              <StatusInfo
+                transactionHash={transactionHash}
+                contractAddress={contractAddress}
+              />
+            </Form>
+          )}
+        />
+      </Paper>
+    </>
+  );
 }
+
+const StyledBox = styled.div`
+  margin: 16px 0 8px;
+`;
+
+const StatusInfo = ({ transactionHash, contractAddress }) => (
+  <StyledBox>
+    {transactionHash && (
+      <Typography variant="subtitle2">
+        Contract creation broadcast: txhash={transactionHash}
+      </Typography>
+    )}
+    {contractAddress && (
+      <Typography variant="subtitle2">
+        ERC20 contract created: address={contractAddress}
+      </Typography>
+    )}
+  </StyledBox>
+);
+
+const CustomTextField = ({
+  field,
+  form: { errors, touched, isSubmitting },
+  label,
+  helperText
+}) => (
+  <TextField
+    {...field}
+    label={label}
+    error={errors[field.name] && touched[field.name]}
+    helperText={errors[field.name] || helperText}
+    margin="normal"
+    disabled={isSubmitting}
+    required
+    fullWidth
+  />
+);
