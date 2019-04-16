@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
+import { Web3Context } from "./Web3Context";
 import TokenCreationForm from "./TokenCreationForm";
 import StandardERC20Token from "./contracts/StandardERC20Token.json";
 
@@ -31,15 +32,16 @@ const StyledDiv = styled.div`
 `;
 
 const web3Options = {
-  trnasactionConfirmationBlocks: 1
+  transactionConfirmationBlocks: 1
 };
 
-export default function App() {
+const web3 = new Web3(sdk.ethereum.web3Provider, null, web3Options);
+
+const App = () => {
   const [transactionHash, setTransactionHash] = useState();
   const [contractAddress, setContractAddress] = useState();
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    const web3 = new Web3(sdk.ethereum.web3Provider, null, web3Options);
     const accounts = await web3.eth.getAccounts();
     const defaultAccount = accounts[0];
 
@@ -73,7 +75,7 @@ export default function App() {
   };
 
   return (
-    <>
+    <Web3Context.Provider value={web3}>
       <CssBaseline />
       <Paper component={StyledDiv}>
         <Formik
@@ -89,6 +91,8 @@ export default function App() {
           )}
         />
       </Paper>
-    </>
+    </Web3Context.Provider>
   );
-}
+};
+
+export default App;

@@ -5,7 +5,15 @@ import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Divider from "@material-ui/core/Divider";
 import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import QrcodeScan from "mdi-material-ui/QrcodeScan";
+import WindowClose from "mdi-material-ui/WindowClose";
+import AccountArrowLeftOutline from "mdi-material-ui/AccountArrowLeftOutline";
 import styled from "styled-components";
+import { useWeb3 } from "./Web3Context";
+import { useQRReader } from "./useQRReader";
 import ContractCreationStatus from "./ContractCreationStatus";
 
 const TokenCreationForm = ({
@@ -54,6 +62,7 @@ const TokenCreationForm = ({
           {...props}
           label="Initial owner"
           helperText="Enter the address to be assigned as the owner of all initial tokens"
+          isAddress
         />
       )}
     />
@@ -83,19 +92,65 @@ const StyledBox = styled.div`
 
 const CustomTextField = ({
   field,
-  form: { errors, touched, isSubmitting },
+  form: { errors, touched, isSubmitting, setFieldValue, setFieldTouched },
   label,
-  helperText
-}) => (
-  <TextField
-    {...field}
-    label={label}
-    error={errors[field.name] && touched[field.name]}
-    helperText={errors[field.name] || helperText}
-    margin="normal"
-    disabled={isSubmitting}
-    required
-    fullWidth
-  />
-);
+  helperText,
+  isAddress
+}) => {
+  const web3 = useWeb3();
+
+  const setValue = value => {
+    setFieldValue(field.name, value, false);
+    setFieldTouched(field.name);
+  };
+  const [isScanning, toggleScanning, QRReader] = useQRReader(setValue);
+
+  const handleFillMyAddress = async () => {
+    const accounts = await web3.eth.getAccounts();
+    const defaultAccount = accounts[0];
+    setValue(defaultAccount);
+  };
+
+  let inputProps;
+  if (isAddress) {
+    inputProps = {
+      endAdornment: (
+        <InputAdornment position="end">
+          <Tooltip
+            title={
+              isScanning ? "Close camera" : "Open camera and scan a QR code"
+            }
+          >
+            <IconButton onClick={toggleScanning} disabled={isSubmitting}>
+              {isScanning ? <WindowClose /> : <QrcodeScan />}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Fill with my address">
+            <IconButton onClick={handleFillMyAddress} disabled={isSubmitting}>
+              <AccountArrowLeftOutline />
+            </IconButton>
+          </Tooltip>
+        </InputAdornment>
+      )
+    };
+  }
+
+  return (
+    <>
+      <TextField
+        {...field}
+        label={label}
+        error={errors[field.name] && touched[field.name]}
+        helperText={errors[field.name] || helperText}
+        margin="normal"
+        disabled={isSubmitting}
+        InputProps={inputProps}
+        required
+        fullWidth
+      />
+      <QRReader />
+    </>
+  );
+};
+
 export default TokenCreationForm;
