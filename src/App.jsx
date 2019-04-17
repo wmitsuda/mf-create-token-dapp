@@ -7,6 +7,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
 import { Web3Context } from "./Web3Context";
+import { SnackbarProvider } from "notistack";
 import TokenCreationForm from "./TokenCreationForm";
 import StandardERC20Token from "./contracts/StandardERC20Token.json";
 
@@ -40,8 +41,12 @@ const web3 = new Web3(sdk.ethereum.web3Provider, null, web3Options);
 const App = () => {
   const [transactionHash, setTransactionHash] = useState();
   const [contractAddress, setContractAddress] = useState();
+  const [step, setStep] = useState(0);
+  const [creationError, setCreationError] = useState(false);
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    setCreationError(false);
+
     const accounts = await web3.eth.getAccounts();
     const defaultAccount = accounts[0];
 
@@ -51,6 +56,8 @@ const App = () => {
       web3Options
     );
     try {
+      setStep(1);
+
       const contract = await erc20
         .deploy({
           data: StandardERC20Token.bytecode,
@@ -64,33 +71,40 @@ const App = () => {
         })
         .send({ from: defaultAccount })
         .on("transactionHash", hash => {
+          setStep(3);
           setTransactionHash(hash);
         });
+      setStep(4);
       setContractAddress(contract.options.address);
     } catch (err) {
       console.log("Some error occurred or user has cancelled operation");
       console.log(err);
+      setCreationError(true);
     }
     setSubmitting(false);
   };
 
   return (
     <Web3Context.Provider value={web3}>
-      <CssBaseline />
-      <Paper component={StyledDiv}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-          render={props => (
-            <TokenCreationForm
-              transactionHash={transactionHash}
-              contractAddress={contractAddress}
-              {...props}
-            />
-          )}
-        />
-      </Paper>
+      <SnackbarProvider maxSnack={1} autoHideDuration={1000}>
+        <CssBaseline />
+        <Paper component={StyledDiv}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+            render={props => (
+              <TokenCreationForm
+                transactionHash={transactionHash}
+                contractAddress={contractAddress}
+                step={step}
+                creationError={creationError}
+                {...props}
+              />
+            )}
+          />
+        </Paper>
+      </SnackbarProvider>
     </Web3Context.Provider>
   );
 };

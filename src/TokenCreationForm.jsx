@@ -19,6 +19,8 @@ import ContractCreationStatus from "./ContractCreationStatus";
 const TokenCreationForm = ({
   transactionHash,
   contractAddress,
+  step,
+  creationError,
   isSubmitting
 }) => (
   <Form noValidate>
@@ -81,6 +83,8 @@ const TokenCreationForm = ({
       <ContractCreationStatus
         transactionHash={transactionHash}
         contractAddress={contractAddress}
+        step={step}
+        creationError={creationError}
       />
     </StyledBox>
   </Form>
