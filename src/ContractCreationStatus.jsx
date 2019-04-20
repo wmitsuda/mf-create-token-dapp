@@ -19,7 +19,7 @@ const ContractCreationStatus = ({
   creationError
 }) => {
   const { enqueueSnackbar } = useSnackbar();
-  if (step === 0) {
+  if (step === undefined) {
     return null;
   }
 
@@ -27,12 +27,12 @@ const ContractCreationStatus = ({
     <>
       <Stepper activeStep={step} orientation="vertical">
         <Step>
-          <StepLabel>Confirm contract creation transaction signing</StepLabel>
+          <StepLabel error={creationError && step === 0}>
+            Confirm contract creation transaction signing
+          </StepLabel>
         </Step>
         <Step>
-          <StepLabel error={creationError && step === 1}>
-            Broadcast tx to ethereum network
-          </StepLabel>
+          <StepLabel>Broadcast tx to ethereum network</StepLabel>
         </Step>
         <Step>
           <StepLabel error={creationError && step === 2}>

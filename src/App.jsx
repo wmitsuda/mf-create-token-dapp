@@ -41,7 +41,7 @@ const web3 = new Web3(sdk.ethereum.web3Provider, null, web3Options);
 const App = () => {
   const [transactionHash, setTransactionHash] = useState();
   const [contractAddress, setContractAddress] = useState();
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState();
   const [creationError, setCreationError] = useState(false);
 
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -56,7 +56,7 @@ const App = () => {
       web3Options
     );
     try {
-      setStep(1);
+      setStep(0);
 
       const contract = await erc20
         .deploy({
@@ -71,10 +71,10 @@ const App = () => {
         })
         .send({ from: defaultAccount })
         .on("transactionHash", hash => {
-          setStep(3);
+          setStep(2);
           setTransactionHash(hash);
         });
-      setStep(4);
+      setStep(3);
       setContractAddress(contract.options.address);
     } catch (err) {
       console.log("Some error occurred or user has cancelled operation");
