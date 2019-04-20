@@ -5,11 +5,9 @@ import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
+import { Identicon } from "ethereum-react-components";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import ContentCopy from "mdi-material-ui/ContentCopy";
 import { useSnackbar } from "notistack";
 
 const ContractCreationStatus = ({
@@ -30,63 +28,56 @@ const ContractCreationStatus = ({
           <StepLabel error={creationError && step === 0}>
             Confirm contract creation transaction signing
           </StepLabel>
+          <StepContent />
         </Step>
         <Step>
           <StepLabel>Broadcast tx to ethereum network</StepLabel>
+          <StepContent />
         </Step>
         <Step>
           <StepLabel error={creationError && step === 2}>
             Waiting for transaction confirmation on the blockchain
           </StepLabel>
           <StepContent>
-            <Typography>txhash: {transactionHash}</Typography>
-            <CopyToClipboard
-              text={transactionHash}
-              onCopy={() => enqueueSnackbar("TxHash copied to clipboard")}
-            >
-              <Button color="secondary">Copy to Clipboard</Button>
-            </CopyToClipboard>
+            <Grid alignItems="center" spacing={8} container>
+              <Grid item>
+                <Typography variant="subtitle2">
+                  txhash: {transactionHash}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <CopyToClipboard
+                  text={transactionHash}
+                  onCopy={() => enqueueSnackbar("TxHash copied to clipboard")}
+                >
+                  <Button color="secondary">Copy to Clipboard</Button>
+                </CopyToClipboard>
+              </Grid>
+            </Grid>
           </StepContent>
         </Step>
-        <Step>
-          <StepLabel>ERC20 contract created</StepLabel>
+        <Step active={step === 4}>
+          <StepLabel>ERC20 contract created 🎉🎉🎉</StepLabel>
           <StepContent>
-            <Typography>Contract address: {contractAddress}</Typography>
-            <CopyToClipboard
-              text={contractAddress}
-              onCopy={() => enqueueSnackbar("Address copied to clipboard")}
-            >
-              <Button color="secondary">Copy to Clipboard</Button>
-            </CopyToClipboard>
+            <Grid alignItems="center" spacing={8} container>
+              <Grid item>
+                <Identicon address={contractAddress} size="small" />
+              </Grid>
+              <Grid item>
+                <Typography variant="subtitle2">{contractAddress}</Typography>
+              </Grid>
+              <Grid item>
+                <CopyToClipboard
+                  text={contractAddress}
+                  onCopy={() => enqueueSnackbar("Address copied to clipboard")}
+                >
+                  <Button color="secondary">Copy to Clipboard</Button>
+                </CopyToClipboard>
+              </Grid>
+            </Grid>
           </StepContent>
         </Step>
       </Stepper>
-      {transactionHash && (
-        <Grid container>
-          <Grid item>
-            <Typography variant="subtitle1">
-              Contract creation broadcast: txhash={transactionHash}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <CopyToClipboard
-              text={transactionHash}
-              onCopy={() => enqueueSnackbar("TxHash copied to clipboard")}
-            >
-              <Tooltip title="Copy to clipboard">
-                <IconButton>
-                  <ContentCopy />
-                </IconButton>
-              </Tooltip>
-            </CopyToClipboard>
-          </Grid>
-        </Grid>
-      )}
-      {contractAddress && (
-        <Typography variant="subtitle1">
-          ERC20 contract created: address={contractAddress}
-        </Typography>
-      )}
     </>
   );
 };

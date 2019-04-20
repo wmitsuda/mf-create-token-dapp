@@ -74,7 +74,7 @@ const App = () => {
           setStep(2);
           setTransactionHash(hash);
         });
-      setStep(3);
+      setStep(4);
       setContractAddress(contract.options.address);
     } catch (err) {
       console.log("Some error occurred or user has cancelled operation");
