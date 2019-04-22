@@ -27,7 +27,7 @@ const TokenCreationForm = ({
 }) => (
   <Form noValidate>
     <Typography variant="h6">
-      Fill the information bellow to create your own ERC20 token
+      Fill the information below to create your own ERC20 token
     </Typography>
     <Field
       name="tokenName"
