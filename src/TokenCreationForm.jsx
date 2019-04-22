@@ -1,4 +1,5 @@
 import React from "react";
+import MainframeSDK from "@mainframe/sdk";
 import { Form, Field } from "formik";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -8,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
+import ImportContacts from "@material-ui/icons/ImportContacts";
 import QrcodeScan from "mdi-material-ui/QrcodeScan";
 import WindowClose from "mdi-material-ui/WindowClose";
 import AccountArrowLeftOutline from "mdi-material-ui/AccountArrowLeftOutline";
@@ -109,6 +111,15 @@ const CustomTextField = ({
   };
   const [isScanning, toggleScanning, QRReader] = useQRReader(setValue);
 
+  const handleSelectContact = async () => {
+    const sdk = new MainframeSDK();
+    const contact = await sdk.contacts.selectContact();
+    if (contact) {
+      const { ethAddress } = contact.data.profile;
+      setValue(ethAddress);
+    }
+  };
+
   const handleFillMyAddress = async () => {
     const accounts = await web3.eth.getAccounts();
     const defaultAccount = accounts[0];
@@ -120,6 +131,11 @@ const CustomTextField = ({
     inputProps = {
       endAdornment: (
         <InputAdornment position="end">
+          <Tooltip title="Select contact">
+            <IconButton onClick={handleSelectContact} disabled={isSubmitting}>
+              <ImportContacts />
+            </IconButton>
+          </Tooltip>
           <Tooltip
             title={
               isScanning ? "Close camera" : "Open camera and scan a QR code"
