@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
+import { MainframeContext } from "./MainframeContext";
 import { Web3Context } from "./Web3Context";
 import { SnackbarProvider } from "notistack";
 import TokenCreationForm from "./TokenCreationForm";
@@ -85,27 +86,29 @@ const App = () => {
   };
 
   return (
-    <Web3Context.Provider value={web3}>
-      <SnackbarProvider maxSnack={1} autoHideDuration={1000}>
-        <CssBaseline />
-        <Paper component={StyledDiv}>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-            render={props => (
-              <TokenCreationForm
-                transactionHash={transactionHash}
-                contractAddress={contractAddress}
-                step={step}
-                creationError={creationError}
-                {...props}
-              />
-            )}
-          />
-        </Paper>
-      </SnackbarProvider>
-    </Web3Context.Provider>
+    <MainframeContext.Provider value={sdk}>
+      <Web3Context.Provider value={web3}>
+        <SnackbarProvider maxSnack={1} autoHideDuration={1000}>
+          <CssBaseline />
+          <Paper component={StyledDiv}>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+              render={props => (
+                <TokenCreationForm
+                  transactionHash={transactionHash}
+                  contractAddress={contractAddress}
+                  step={step}
+                  creationError={creationError}
+                  {...props}
+                />
+              )}
+            />
+          </Paper>
+        </SnackbarProvider>
+      </Web3Context.Provider>
+    </MainframeContext.Provider>
   );
 };
 

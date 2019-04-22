@@ -1,5 +1,4 @@
 import React from "react";
-import MainframeSDK from "@mainframe/sdk";
 import { Form, Field } from "formik";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -14,6 +13,7 @@ import QrcodeScan from "mdi-material-ui/QrcodeScan";
 import WindowClose from "mdi-material-ui/WindowClose";
 import AccountArrowLeftOutline from "mdi-material-ui/AccountArrowLeftOutline";
 import styled from "styled-components";
+import { useMainframe } from "./MainframeContext";
 import { useWeb3 } from "./Web3Context";
 import { useQRReader } from "./useQRReader";
 import ContractCreationStatus from "./ContractCreationStatus";
@@ -111,8 +111,8 @@ const CustomTextField = ({
   };
   const [isScanning, toggleScanning, QRReader] = useQRReader(setValue);
 
+  const sdk = useMainframe();
   const handleSelectContact = async () => {
-    const sdk = new MainframeSDK();
     const contact = await sdk.contacts.selectContact();
     if (contact) {
       const { ethAddress } = contact.data.profile;
