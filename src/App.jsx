@@ -10,6 +10,7 @@ import { Web3Context } from "./Web3Context";
 import { SnackbarProvider } from "notistack";
 import { initialValues, createValidationSchema } from "./validationSchema";
 import TokenCreationForm from "./TokenCreationForm";
+import ContractCreationStatus from "./ContractCreationStatus";
 import StandardERC20Token from "./contracts/StandardERC20Token.json";
 
 const sdk = new MainframeSDK();
@@ -79,15 +80,13 @@ const App = () => {
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
-              render={props => (
-                <TokenCreationForm
-                  transactionHash={transactionHash}
-                  contractAddress={contractAddress}
-                  step={step}
-                  creationError={creationError}
-                  {...props}
-                />
-              )}
+              component={TokenCreationForm}
+            />
+            <ContractCreationStatus
+              transactionHash={transactionHash}
+              contractAddress={contractAddress}
+              step={step}
+              creationError={creationError}
             />
           </Paper>
         </SnackbarProvider>

@@ -17,15 +17,8 @@ import { useSnackbar } from "notistack";
 import { useMainframe } from "./MainframeContext";
 import { useWeb3 } from "./Web3Context";
 import { useQRReader } from "./useQRReader";
-import ContractCreationStatus from "./ContractCreationStatus";
 
-const TokenCreationForm = ({
-  transactionHash,
-  contractAddress,
-  step,
-  creationError,
-  isSubmitting
-}) => (
+const TokenCreationForm = ({ isSubmitting }) => (
   <Form noValidate>
     <Typography variant="h6">
       Fill the information below to create your own ERC20 token
@@ -82,14 +75,6 @@ const TokenCreationForm = ({
       </Button>
     </StyledBox>
     <StyledBox>{isSubmitting ? <LinearProgress /> : <Divider />}</StyledBox>
-    <StyledBox>
-      <ContractCreationStatus
-        transactionHash={transactionHash}
-        contractAddress={contractAddress}
-        step={step}
-        creationError={creationError}
-      />
-    </StyledBox>
   </Form>
 );
 
