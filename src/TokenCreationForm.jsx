@@ -13,6 +13,7 @@ import QrcodeScan from "mdi-material-ui/QrcodeScan";
 import WindowClose from "mdi-material-ui/WindowClose";
 import AccountArrowLeftOutline from "mdi-material-ui/AccountArrowLeftOutline";
 import styled from "styled-components";
+import { useSnackbar } from "notistack";
 import { useMainframe } from "./MainframeContext";
 import { useWeb3 } from "./Web3Context";
 import { useQRReader } from "./useQRReader";
@@ -112,11 +113,19 @@ const CustomTextField = ({
   const [isScanning, toggleScanning, QRReader] = useQRReader(setValue);
 
   const sdk = useMainframe();
+  const { enqueueSnackbar } = useSnackbar();
   const handleSelectContact = async () => {
     const contact = await sdk.contacts.selectContact();
     if (contact) {
       const { ethAddress } = contact.data.profile;
-      setValue(ethAddress);
+      if (!ethAddress) {
+        enqueueSnackbar(
+          "The selected contact does not have a public ETH address",
+          { autoHideDuration: 5000 }
+        );
+      } else {
+        setValue(ethAddress);
+      }
     }
   };
 
