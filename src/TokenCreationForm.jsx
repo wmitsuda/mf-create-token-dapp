@@ -23,46 +23,26 @@ const TokenCreationForm = ({ isSubmitting }) => (
     <Typography variant="h6">
       Fill the information below to create your own ERC20 token
     </Typography>
-    <Field
+    <CustomField
       name="tokenName"
-      render={props => (
-        <CustomTextField
-          {...props}
-          label="Token name"
-          helperText="Enter the token name, e.g. Testcoin"
-        />
-      )}
+      label="Token name"
+      helperText="Enter the token name, e.g. Testcoin"
     />
-    <Field
+    <CustomField
       name="tokenSymbol"
-      render={props => (
-        <CustomTextField
-          {...props}
-          label="Token symbol"
-          helperText="Enter the token symbol, e.g. TEST"
-        />
-      )}
+      label="Token symbol"
+      helperText="Enter the token symbol, e.g. TEST"
     />
-    <Field
+    <CustomField
       name="initialSupply"
-      render={props => (
-        <CustomTextField
-          {...props}
-          label="Initial supply"
-          helperText="Enter the initial token supply, e.g. 1000"
-        />
-      )}
+      label="Initial supply"
+      helperText="Enter the initial token supply, e.g. 1000"
     />
-    <Field
+    <CustomField
       name="initialOwner"
-      render={props => (
-        <CustomTextField
-          {...props}
-          label="Initial owner"
-          helperText="Enter the address to be assigned as the owner of all initial tokens"
-          isAddress
-        />
-      )}
+      label="Initial owner"
+      helperText="Enter the address to be assigned as the owner of all initial tokens"
+      isAddress
     />
     <StyledBox>
       <Button
@@ -81,6 +61,13 @@ const TokenCreationForm = ({ isSubmitting }) => (
 const StyledBox = styled.div`
   margin: 16px 0 8px;
 `;
+
+const CustomField = ({ name, ...rest }) => (
+  <Field
+    name={name}
+    render={props => <CustomTextField {...props} {...rest} />}
+  />
+);
 
 const CustomTextField = ({
   field,
