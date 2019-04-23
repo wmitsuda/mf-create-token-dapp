@@ -1,6 +1,13 @@
 import * as Yup from "yup";
 
 const initialValues = {
+  tokenName: "",
+  tokenSymbol: "",
+  initialSupply: "",
+  initialOwner: ""
+};
+
+const sampleValues = {
   tokenName: "Testcoin",
   tokenSymbol: "TEST",
   initialSupply: "100",
@@ -40,4 +47,4 @@ const createValidationSchema = web3 => {
   });
 };
 
-export { initialValues, createValidationSchema };
+export { initialValues, sampleValues, createValidationSchema };
