@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Web3Context } from "./Web3Context";
 import QrReader from "react-qr-reader";
 
@@ -23,8 +23,10 @@ const useQRReader = setValue => {
 
   const toggleScanning = () => setScanning(!isScanning);
 
+  const qrRef = useRef();
   const QRReader = () => (
     <>
+      <div ref={qrRef} />
       {isScanning && (
         <QrReader
           onScan={onScan}
@@ -34,6 +36,11 @@ const useQRReader = setValue => {
       )}
     </>
   );
+  useEffect(() => {
+    if (isScanning) {
+      window.scrollTo({ behavior: "smooth", top: qrRef.current.offsetTop });
+    }
+  }, [isScanning]);
 
   return [isScanning, toggleScanning, QRReader];
 };
