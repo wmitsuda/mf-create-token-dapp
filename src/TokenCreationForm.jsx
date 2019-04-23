@@ -62,19 +62,40 @@ const StyledBox = styled.div`
   margin: 16px 0 8px;
 `;
 
-const CustomField = ({ name, ...rest }) => (
-  <Field
-    name={name}
-    render={props => <CustomTextField {...props} {...rest} />}
-  />
-);
+const CustomField = ({ name, isAddress, ...rest }) => {
+  let Component = CustomTextField;
+  if (isAddress) {
+    Component = CustomAddressField;
+  }
+
+  return (
+    <Field name={name} render={props => <Component {...props} {...rest} />} />
+  );
+};
 
 const CustomTextField = ({
   field,
   form: { errors, touched, isSubmitting, setFieldValue, setFieldTouched },
   label,
-  helperText,
-  isAddress
+  helperText
+}) => (
+  <TextField
+    {...field}
+    label={label}
+    error={errors[field.name] && touched[field.name]}
+    helperText={errors[field.name] || helperText}
+    margin="normal"
+    disabled={isSubmitting}
+    required
+    fullWidth
+  />
+);
+
+const CustomAddressField = ({
+  field,
+  form: { errors, touched, isSubmitting, setFieldValue, setFieldTouched },
+  label,
+  helperText
 }) => {
   const web3 = useWeb3();
 
@@ -107,34 +128,29 @@ const CustomTextField = ({
     setValue(defaultAccount);
   };
 
-  let inputProps;
-  if (isAddress) {
-    inputProps = {
-      endAdornment: (
-        <InputAdornment position="end">
-          <Tooltip title="Select contact">
-            <IconButton onClick={handleSelectContact} disabled={isSubmitting}>
-              <ImportContacts />
-            </IconButton>
-          </Tooltip>
-          <Tooltip
-            title={
-              isScanning ? "Close camera" : "Open camera and scan a QR code"
-            }
-          >
-            <IconButton onClick={toggleScanning} disabled={isSubmitting}>
-              {isScanning ? <WindowClose /> : <QrcodeScan />}
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Fill with my address">
-            <IconButton onClick={handleFillMyAddress} disabled={isSubmitting}>
-              <AccountArrowLeftOutline />
-            </IconButton>
-          </Tooltip>
-        </InputAdornment>
-      )
-    };
-  }
+  const inputProps = {
+    endAdornment: (
+      <InputAdornment position="end">
+        <Tooltip title="Select contact">
+          <IconButton onClick={handleSelectContact} disabled={isSubmitting}>
+            <ImportContacts />
+          </IconButton>
+        </Tooltip>
+        <Tooltip
+          title={isScanning ? "Close camera" : "Open camera and scan a QR code"}
+        >
+          <IconButton onClick={toggleScanning} disabled={isSubmitting}>
+            {isScanning ? <WindowClose /> : <QrcodeScan />}
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Fill with my address">
+          <IconButton onClick={handleFillMyAddress} disabled={isSubmitting}>
+            <AccountArrowLeftOutline />
+          </IconButton>
+        </Tooltip>
+      </InputAdornment>
+    )
+  };
 
   return (
     <>
