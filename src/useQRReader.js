@@ -7,9 +7,12 @@ const useQRReader = setValue => {
   const web3 = useContext(Web3Context);
 
   const onScan = result => {
+    if (result === null) {
+      return;
+    }
     if (web3.utils.isAddress(result)) {
-      setValue(result);
       setScanning(false);
+      setValue(result);
     }
   };
 
