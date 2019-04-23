@@ -24,7 +24,15 @@ const useQRReader = setValue => {
   const toggleScanning = () => setScanning(!isScanning);
 
   const QRReader = () => (
-    <>{isScanning && <QrReader onScan={onScan} onError={onError} />}</>
+    <>
+      {isScanning && (
+        <QrReader
+          onScan={onScan}
+          onError={onError}
+          style={{ maxWidth: "500px" }}
+        />
+      )}
+    </>
   );
 
   return [isScanning, toggleScanning, QRReader];
