@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import MainframeSDK from "@mainframe/sdk";
 import Web3 from "web3";
 import { Formik } from "formik";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
 import styled from "styled-components";
@@ -22,6 +23,27 @@ const web3Options = {
 const web3 = new Web3(sdk.ethereum.web3Provider, null, web3Options);
 
 const validationSchema = createValidationSchema(web3);
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#00A7E7",
+      dark: "#1F3464",
+      contrastText: "#FFFFFF"
+    },
+    secondary: {
+      main: "#DA1157",
+      contrastText: "#FFFFFF"
+    },
+    error: {
+      main: "#DA1157"
+    },
+    text: {
+      primary: "#232323",
+      secondary: "#1F3464"
+    }
+  }
+});
 
 const App = () => {
   const [transactionHash, setTransactionHash] = useState();
@@ -73,23 +95,25 @@ const App = () => {
   return (
     <MainframeContext.Provider value={sdk}>
       <Web3Context.Provider value={web3}>
-        <SnackbarProvider maxSnack={1} autoHideDuration={1000}>
-          <CssBaseline />
-          <Paper component={StyledDiv}>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-              component={TokenCreationForm}
-            />
-            <ContractCreationStatus
-              transactionHash={transactionHash}
-              contractAddress={contractAddress}
-              step={step}
-              creationError={creationError}
-            />
-          </Paper>
-        </SnackbarProvider>
+        <MuiThemeProvider theme={theme}>
+          <SnackbarProvider maxSnack={1} autoHideDuration={1000}>
+            <CssBaseline />
+            <Paper component={StyledDiv}>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+                component={TokenCreationForm}
+              />
+              <ContractCreationStatus
+                transactionHash={transactionHash}
+                contractAddress={contractAddress}
+                step={step}
+                creationError={creationError}
+              />
+            </Paper>
+          </SnackbarProvider>
+        </MuiThemeProvider>
       </Web3Context.Provider>
     </MainframeContext.Provider>
   );
