@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { MainframeContext } from "./MainframeContext";
 import { Web3Context } from "./Web3Context";
 import { SnackbarProvider } from "notistack";
+import { Identicon } from "ethereum-react-components";
 import { initialValues, createValidationSchema } from "./validationSchema";
 import TokenCreationForm from "./TokenCreationForm";
 import ContractCreationStatus from "./ContractCreationStatus";
