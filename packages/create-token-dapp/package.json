@@ -8,6 +8,7 @@
     "@material-ui/icons": "^3.0.2",
     "@morpheus-ui/core": "0.0.41",
     "@morpheus-ui/fonts": "^0.0.1",
+    "erc20-token-contract": "^1.0.0",
     "ethereum-react-components": "^1.14.0",
     "formik": "^1.5.2",
     "mdi-material-ui": "^5.10.0",

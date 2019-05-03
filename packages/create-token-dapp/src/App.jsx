@@ -13,7 +13,7 @@ import { Identicon } from "ethereum-react-components";
 import { initialValues, createValidationSchema } from "./validationSchema";
 import TokenCreationForm from "./TokenCreationForm";
 import ContractCreationStatus from "./ContractCreationStatus";
-import StandardERC20Token from "./contracts/StandardERC20Token.json";
+import StandardERC20Token from "erc20-token-contract/build/contracts/StandardERC20Token";
 
 const sdk = new MainframeSDK();
 
