@@ -9,7 +9,7 @@
   "author": "Willian Mitsuda <wmitsuda@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "openzeppelin-solidity": "^2.1.3",
+    "openzeppelin-solidity": "^2.2.0",
     "truffle": "^5.0.9"
   }
 }
