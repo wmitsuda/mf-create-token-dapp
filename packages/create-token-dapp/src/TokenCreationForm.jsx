@@ -83,7 +83,11 @@ const CustomTextField = ({
     {...field}
     label={label}
     error={errors[field.name] && touched[field.name]}
-    helperText={errors[field.name] || helperText}
+    helperText={
+      errors[field.name] && touched[field.name]
+        ? errors[field.name]
+        : helperText
+    }
     margin="normal"
     disabled={isSubmitting}
     required

@@ -30,7 +30,7 @@ const createValidationSchema = web3 => {
       .max(20, "Token symbol must have a maximum of 20 characters")
       .matches(
         /^[A-Z][A-Z\d]*$/,
-        "Token symbol must start with a letter followed by letters or numbers"
+        "Token symbol must start with an uppercase letter followed by uppercase letters or numbers"
       ),
     initialSupply: Yup.number()
       .typeError("Value must be an integer number")
