@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
+import MainframeSDK from "@mainframe/sdk";
 
-const MainframeContext = React.createContext();
+const MainframeContext = React.createContext<MainframeSDK>(null);
 
 const useMainframe = () => useContext(MainframeContext);
 

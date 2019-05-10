@@ -12,7 +12,14 @@ import { useSnackbar } from "notistack";
 import styled from "styled-components";
 import { useEtherscan } from "./Web3Context";
 
-const ContractCreationStatus = ({
+interface Props {
+  transactionHash: string;
+  contractAddress: string;
+  step: number;
+  creationError: string;
+}
+
+const ContractCreationStatus: React.FunctionComponent<Props> = ({
   transactionHash,
   contractAddress,
   step,
@@ -31,11 +38,11 @@ const ContractCreationStatus = ({
           <StepLabel error={creationError && step === 0}>
             Confirm contract creation transaction signing
           </StepLabel>
-          <StepContent />
+          <StepContent>{}</StepContent>
         </Step>
         <Step>
           <StepLabel>Broadcast transaction to ethereum network</StepLabel>
-          <StepContent />
+          <StepContent>{}</StepContent>
         </Step>
         <Step>
           <StepLabel error={creationError && step === 2}>

@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
+import Web3 from "web3";
 
-const Web3Context = React.createContext();
+const Web3Context = React.createContext<Web3>(null);
 
 const useWeb3 = () => useContext(Web3Context);
 
-const useNetwork = () => {
+const useNetwork = (): [number, string] => {
   const web3 = useWeb3();
-  const [networkId, setNetworkId] = useState();
-  const [networkName, setNetworkName] = useState();
+  const [networkId, setNetworkId] = useState<number>();
+  const [networkName, setNetworkName] = useState<string>();
 
   useEffect(() => {
     const getNetworkId = async () => {
       const id = await web3.eth.net.getId();
       setNetworkId(id);
 
-      let name;
+      let name: string;
       switch (id) {
         case 1:
           name = "Main";
@@ -55,11 +56,11 @@ const useEtherscan = () => {
   }
 
   return {
-    getTxURL: transactionHash =>
+    getTxURL: (transactionHash: string) =>
       `https://${networkPrefix}etherscan.io/tx/${transactionHash}`,
-    getAddressURL: address =>
+    getAddressURL: (address: string) =>
       `https://${networkPrefix}etherscan.io/address/${address}`,
-    getTokenURL: address =>
+    getTokenURL: (address: string) =>
       `https://${networkPrefix}etherscan.io/token/${address}`
   };
 };

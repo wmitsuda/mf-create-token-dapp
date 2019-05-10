@@ -12,6 +12,7 @@
     "@types/node": "^11.13.9",
     "@types/react": "^16.8.15",
     "@types/react-dom": "^16.8.4",
+    "@types/yup": "^0.26.13",
     "erc20-token-contract": "^1.0.0",
     "ethereum-react-components": "^1.14.0",
     "formik": "^1.5.2",

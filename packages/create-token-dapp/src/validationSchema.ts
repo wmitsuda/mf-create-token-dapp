@@ -1,20 +1,28 @@
 import * as Yup from "yup";
+import Web3 from "web3";
 
-const initialValues = {
+interface FormData {
+  tokenName: string;
+  tokenSymbol: string;
+  initialSupply: string;
+  initialOwner: string;
+}
+
+const initialValues: FormData = {
   tokenName: "",
   tokenSymbol: "",
   initialSupply: "",
   initialOwner: ""
 };
 
-const sampleValues = {
+const sampleValues: FormData = {
   tokenName: "Testcoin",
   tokenSymbol: "TEST",
   initialSupply: "100",
   initialOwner: "0xe3f0D0ECfD7F655F322A05d15C996748Ad945561"
 };
 
-const createValidationSchema = web3 => {
+const createValidationSchema = (web3: Web3) => {
   return Yup.object().shape({
     tokenName: Yup.string()
       .required("Value is required")
