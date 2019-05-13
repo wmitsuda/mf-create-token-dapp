@@ -2,11 +2,15 @@ import React, { useState, useContext, useRef, useEffect } from "react";
 import { Web3Context } from "./Web3Context";
 import QrReader from "react-qr-reader";
 
-const useQRReader = setValue => {
+type ValueSetter = (value: string) => void;
+
+const useQRReader = (
+  setValue: ValueSetter
+): [boolean, () => void, () => JSX.Element] => {
   const [isScanning, setScanning] = useState(false);
   const web3 = useContext(Web3Context);
 
-  const onScan = result => {
+  const onScan = (result: string) => {
     if (result === null) {
       return;
     }
@@ -16,14 +20,14 @@ const useQRReader = setValue => {
     }
   };
 
-  const onError = err => {
+  const onError = (err: string) => {
     console.log("Error while scanning address: " + err);
     setScanning(false);
   };
 
   const toggleScanning = () => setScanning(!isScanning);
 
-  const qrRef = useRef();
+  const qrRef = useRef<HTMLDivElement>();
   const QRReader = () => (
     <>
       <div ref={qrRef} />

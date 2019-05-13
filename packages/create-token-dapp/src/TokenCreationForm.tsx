@@ -18,7 +18,13 @@ import { useMainframe } from "./MainframeContext";
 import { useWeb3 } from "./Web3Context";
 import { useQRReader } from "./useQRReader";
 
-const TokenCreationForm = ({ isSubmitting }) => (
+interface Props {
+  isSubmitting: boolean;
+}
+
+const TokenCreationForm: React.FunctionComponent<Props> = ({
+  isSubmitting
+}) => (
   <Form noValidate>
     <Typography variant="h6">
       Fill the information below to create your own ERC20 token
@@ -62,7 +68,18 @@ const StyledBox = styled.div`
   margin: 16px 0 8px;
 `;
 
-const CustomField = ({ name, isAddress, ...rest }) => {
+interface CustomFieldProps {
+  name: string;
+  isAddress?: boolean;
+  label: string;
+  helperText: string;
+}
+
+const CustomField: React.FunctionComponent<CustomFieldProps> = ({
+  name,
+  isAddress,
+  ...rest
+}) => {
   let Component = CustomTextField;
   if (isAddress) {
     Component = CustomAddressField;
@@ -103,7 +120,7 @@ const CustomAddressField = ({
 }) => {
   const web3 = useWeb3();
 
-  const setValue = value => {
+  const setValue = (value: string) => {
     setFieldValue(field.name, value, false);
     setFieldTouched(field.name);
   };

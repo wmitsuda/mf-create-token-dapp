@@ -13,7 +13,7 @@ import { Identicon } from "ethereum-react-components";
 import { initialValues, createValidationSchema } from "./validationSchema";
 import TokenCreationForm from "./TokenCreationForm";
 import ContractCreationStatus from "./ContractCreationStatus";
-import StandardERC20Token from "erc20-token-contract/build/contracts/StandardERC20Token";
+import StandardERC20Token from "erc20-token-contract/build/contracts/StandardERC20Token.json";
 
 const sdk = new MainframeSDK();
 
@@ -24,6 +24,9 @@ const web3Options = {
 const web3 = new Web3(sdk.ethereum.web3Provider, null, web3Options);
 
 const validationSchema = createValidationSchema(web3);
+
+/// Workaround for https://github.com/ethereum/ethereum-react-components/issues/143
+const workaround = <Identicon />;
 
 const theme = createMuiTheme({
   palette: {

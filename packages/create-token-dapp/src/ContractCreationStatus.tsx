@@ -13,10 +13,10 @@ import styled from "styled-components";
 import { useEtherscan } from "./Web3Context";
 
 interface Props {
-  transactionHash: string;
-  contractAddress: string;
+  transactionHash?: string;
+  contractAddress?: string;
   step: number;
-  creationError: string;
+  creationError: boolean;
 }
 
 const ContractCreationStatus: React.FunctionComponent<Props> = ({
